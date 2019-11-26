@@ -24,7 +24,8 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
            plotlyOutput("weight_time"),
-           plotlyOutput("reps")
+           plotlyOutput("reps"),
+           plotlyOutput("total_weight")
         )
     )
 )
@@ -34,6 +35,19 @@ server <- function(input, output) {
     
     fitbod_data <- read_csv('fitbod_workout.csv')
     data_weights <- fitbod_data %>% filter(Weight > 0)
+    total <- fitbod_data %>%
+        filter(Weight > 0) %>%
+        mutate(total_weight_set = Weight * Reps) %>%
+        group_by(Exercise, Date) %>%
+        summarise(total_weight = sum(total_weight_set)) %>%
+        ungroup()
+    
+    output$total_weight <- renderPlotly({
+        plot_ly(total, x = ~Date, y = ~total_weight, color = ~Exercise) %>%
+            filter(Exercise %in% input$exercises) %>%
+            # group_by(city) %>%
+            add_lines()
+    })
 
     output$weight_time <- renderPlotly({
         plot_ly(data_weights, x = ~Date, y = ~Weight, color = ~Exercise) %>%
