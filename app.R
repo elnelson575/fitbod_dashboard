@@ -2,6 +2,7 @@
 library(shiny)
 library(tidyverse)
 library(plotly)
+library(gentelellaShiny)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
