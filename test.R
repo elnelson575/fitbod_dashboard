@@ -53,7 +53,7 @@ shinyApp(
                              title = "Pick an Exercise",
                              icon = "fa fa-th",
                              gradientColor = "teal", 
-                             boxToolSize = "sm", 
+                             boxToolSize = "md", 
                              footer = 
                                selectizeInput(
                                  inputId = "exercises", 
@@ -65,12 +65,12 @@ shinyApp(
                            )
                            ),
                            
-                           column(width = 6, #offset = 1,
+                           column(width = 6,
                                   gradientBox(
                                     title = "Pick a Date Range:",
                                     icon = "fa fa-th",
                                     gradientColor = "blue", 
-                                    boxToolSize = "sm", 
+                                    boxToolSize = "md", 
                                     footer = dateRangeInput("date_range", "Select a date range:", start = as.Date('2019-07-01'), end = as.Date('2019-08-01'), min = NULL,
                                                      max = NULL, format = "yyyy-mm-dd", startview = "month",
                                                      weekstart = 0, language = "en", separator = " to ", width = NULL,
