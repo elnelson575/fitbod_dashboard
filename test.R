@@ -138,9 +138,13 @@ shinyApp(
   
   
   server = function(input, output) {
-    
+    ### Import the data
     fitbod_data <- read_csv('fitbod_workout.csv')
     fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
+    
+    ### TODO:
+    ### Filter for weight over 0 (change so that it shows an error and blank if
+    ### there's not weight but there are reps)
     data_weights <- fitbod_data %>% filter(Weight > 0)
     
     total <- fitbod_data %>%
@@ -150,8 +154,7 @@ shinyApp(
       summarise(total_weight = sum(total_weight_set)) %>%
       ungroup()
     
-    
-    ## TODO: If no weight, graph reps
+
     output$total_weight <- renderPlotly({
       plot_ly(total, x = ~Date, y = ~total_weight, color = ~Exercise) %>%
         filter(Exercise %in% input$exercises) %>%
