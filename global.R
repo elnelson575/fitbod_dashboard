@@ -26,13 +26,32 @@ shinyApp(
   
   server = function(input, output) {
     ### Import the data
-    fitbod_data <- read_csv('fitbod_workout.csv')
+    ### 
+    
+    fitbod_data <- read.csv('fitbod_workout.csv')
     fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
+    clicked <- FALSE
+    fitbod_data_updated <- observeEvent(input$file1, {
+      clicked <- TRUE
+      inFile <- input$file1
+      data <- read.csv(inFile$datapath)
+      data <- data$Date <- as.Date(data$Date, format = "%Y-%m-%d")
+      if (input$include_warmups == TRUE) {
+        data <- filter(data, isWarmup != TRUE)
+      } 
+    })
+
     
     ### TODO:
     ### Filter for weight over 0 (change so that it shows an error and blank if
     ### there's not weight but there are reps)
-    data_weights <- fitbod_data %>% filter(Weight > 0)
+    
+    if (clicked == FALSE) {
+      use_data <- fitbod_data
+    } else {
+      use_data <- fitbod_data_updated()
+    }
+    data_weights <- use_data %>% filter(Weight > 0)
     
     total <- fitbod_data %>%
       filter(Weight > 0) %>%
@@ -46,7 +65,6 @@ shinyApp(
       plot_ly(total, x = ~Date, y = ~total_weight, color = ~Exercise) %>%
         filter(Exercise %in% input$exercises) %>%
         filter(Date >= input$date_range[1] & Date <= input$date_range[2]) %>%
-        # group_by(city) %>%
         add_lines()
     })
     

@@ -4,7 +4,7 @@ source("right_side_bar.R")
 primaryUI <- dashboardPagePlus(
   
   header = dashboardHeaderPlus(
-    enable_rightsidebar = FALSE,
+    enable_rightsidebar = TRUE,
     rightSidebarIcon = "gears"
   ),
   

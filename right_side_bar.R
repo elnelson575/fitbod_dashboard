@@ -3,13 +3,16 @@ right_side_bar_UI <- rightSidebar(
   rightSidebarTabContent(
     id = 1,
     icon = "desktop",
-    title = "Tab 1",
+    title = "Data Upload",
     active = TRUE,
-    sliderInput(
-      "obs", 
-      "Number of observations:",
-      min = 0, max = 1000, value = 500
-    )
+    fileInput("file1", "Upload CSV of Fitbod Data",
+              accept = c(
+                "text/csv",
+                "text/comma-separated-values,text/plain",
+                ".csv")
+    ),
+    tags$hr(),
+    checkboxInput("include_warmups", "Include Warm-Up Exercises?", TRUE)
   ),
   rightSidebarTabContent(
     id = 2,
