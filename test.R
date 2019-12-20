@@ -25,6 +25,9 @@ shinyApp(
     
     
     body = dashboardBody(
+
+      
+      
       plotlyOutput("weight_time"),
       plotlyOutput("reps"),
       plotlyOutput("total_weight")
@@ -73,6 +76,7 @@ shinyApp(
       summarise(total_weight = sum(total_weight_set)) %>%
       ungroup()
     
+    ## TODO: If no weight, graph reps
     output$total_weight <- renderPlotly({
       plot_ly(total, x = ~Date, y = ~total_weight, color = ~Exercise) %>%
         filter(Exercise %in% input$exercises) %>%
