@@ -13,6 +13,24 @@ shinyApp(
     
     
     sidebar = dashboardSidebar(
+      
+      
+      sidebarMenu(
+        # Setting id makes input$tabs give the tabName of currently-selected tab
+        id = "tabs",
+        menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
+        menuItem("Widgets", icon = icon("th"), tabName = "widgets", badgeLabel = "new",
+                 badgeColor = "green"),
+        menuItem("Charts", icon = icon("bar-chart-o"),
+                 menuSubItem("Sub-item 1", tabName = "subitem1"),
+                 menuSubItem("Sub-item 2", tabName = "subitem2")
+        )
+      ),
+      
+      
+      
+      
+      
       selectizeInput(
       inputId = "exercises", 
       label = "Select an exercise", 
@@ -25,7 +43,20 @@ shinyApp(
     
     
     body = dashboardBody(
-
+      tabItems(
+        tabItem("dashboard",
+                div(p("Dashboard tab content"))
+        ),
+        tabItem("widgets",
+                "Widgets tab content"
+        ),
+        tabItem("subitem1",
+                "Sub-item 1 tab content"
+        ),
+        tabItem("subitem2",
+                "Sub-item 2 tab content"
+        )
+      ),
       
       
       plotlyOutput("weight_time"),
