@@ -4,8 +4,14 @@ library(plotly)
 library(shinydashboardPlus)
 library(shiny)
 library(shinydashboard)
+
+
+
 shinyApp(
+  
+  
   ui = dashboardPagePlus(
+
     header = dashboardHeaderPlus(
       enable_rightsidebar = FALSE,
       rightSidebarIcon = "gears"
@@ -21,27 +27,14 @@ shinyApp(
         menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
         menuItem("Muscle Group View", icon = icon("th"), tabName = "widgets", badgeLabel = "new",
                  badgeColor = "green"),
-        menuItem("Exercise View", icon = icon("bar-chart-o"), tabName = "mgv"#,
+        menuItem("Exercise View", icon = icon("bar-chart-o"), tabName = "ev"#,
                  # menuSubItem("Sub-item 1", tabName = "subitem1"),
                  # menuSubItem("Sub-item 2", tabName = "subitem2")
-        )
+        ))
       ),
       
       
       
-      
-      
-      selectizeInput(
-      inputId = "exercises", 
-      label = "Select an exercise", 
-      choices = unique(fitbod_data$Exercise), 
-      selected = "Dumbell Bicep Curl",
-      multiple = TRUE
-    )
-    
-    ),
-    
-    
     body = dashboardBody(
       tabItems(
         tabItem("dashboard",
@@ -50,18 +43,33 @@ shinyApp(
         tabItem("widgets",
                 "Widgets tab content"
         ),
-        tabItem("mgv",
-                "Sub-item 1 tab content"
+        tabItem("ev",
+                
+
+                gradientBox(
+                  title = "Pick an Exercise",
+                  icon = "fa fa-th",
+                  gradientColor = "teal", 
+                  boxToolSize = "sm", 
+                  footer = 
+                  selectizeInput(
+                    inputId = "exercises", 
+                    label = "Select an exercise", 
+                    choices = unique(fitbod_data$Exercise), 
+                    selected = "Dumbell Bicep Curl",
+                    multiple = TRUE
+                  ),
+                ),
+                br(), br(), br(), br(), br(), br(), br(), br(), br(), br(),
+                plotlyOutput("weight_time"),
+                plotlyOutput("reps"),
+                plotlyOutput("total_weight")
         )#,
         # tabItem("subitem2",
         #         "Sub-item 2 tab content"
         # )
-      ),
+      )
       
-      
-      plotlyOutput("weight_time"),
-      plotlyOutput("reps"),
-      plotlyOutput("total_weight")
       
     ),
     rightsidebar = rightSidebar(
@@ -89,7 +97,7 @@ shinyApp(
         numericInput("obs", "Observations:", 10, min = 1, max = 100)
       )
     ),
-    title = "Right Sidebar"
+    title = "FitBod App Monitoring Dashboard"
   ),
   
   
