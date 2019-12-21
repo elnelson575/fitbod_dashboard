@@ -3,7 +3,6 @@ library(shiny)
 library(tidyverse)
 library(plotly)
 library(shinydashboardPlus)
-library(shiny)
 library(shinydashboard)
 library(lubridate)
 
@@ -12,6 +11,8 @@ library(lubridate)
 source("exercise_view_tab.R")
 source("right_side_bar.R")
 source("dashboard_tab.R")
+
+
 fitbod_data <- read.csv('fitbod_workout.csv')
 fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
 

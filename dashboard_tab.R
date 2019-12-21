@@ -51,7 +51,11 @@ dbTab_server <- function(input, output, session, fitbod_data) {
                                220000, 450000)
   )
   
-  weights_filt <- filter(weights, weight <= total_weight)
+  
+  weights_filt <- weights %>%
+    filter(weight < as.numeric(total_weight))
+  
+  View(weights_filt)
   comp <- weights_filt[sample(1:nrow(weights_filt), 1), ]
   
   num <- total_weight / comp$weight
