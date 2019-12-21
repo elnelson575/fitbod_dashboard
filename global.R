@@ -11,8 +11,7 @@ library(lubridate)
 # tabs
 source("exercise_view_tab.R")
 source("right_side_bar.R")
-
-# sample data
+source("dashboard_tab.R")
 
 
 ui <- dashboardPagePlus(
@@ -40,8 +39,7 @@ ui <- dashboardPagePlus(
   
   body = dashboardBody(
     tabItems(
-      tabItem("dashboard",
-              div(p("Dashboard tab content"))
+      tabItem("dashboard", dbTab_UI("dbTab", "Dashboard Tab")
       ),
       tabItem("widgets",
               "Widgets tab content"
@@ -60,6 +58,7 @@ server <- function(input, output, session) {
   fitbod_data <- read.csv('fitbod_workout.csv')
   fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
   callModule(evTab_server, "evTab", fitbod_data)
+  callModule(dbTab_server, "dbTab", fitbod_data)
   callModule(sidebar_server, "right_sidebar")
 }
 

@@ -83,7 +83,6 @@ evTab_server <- function(input, output, session, fitbod_data) {
   output$reps <- renderPlotly({
     plot_ly(fitbod_data, x = ~Date, y = ~Reps, color = ~Exercise) %>%
       filter(Exercise %in% input$exercises) %>%
-      # group_by(city) %>%
       add_lines()
   })
 }
