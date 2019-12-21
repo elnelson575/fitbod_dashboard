@@ -1,6 +1,6 @@
 ### UI Function ###
 
-evTab_UI <- function(id, label = "ev") {
+evTab_UI <- function(id, label = "ev", fitbod_data) {
   ns <- NS(id)
  # tagList(
             fluidPage(

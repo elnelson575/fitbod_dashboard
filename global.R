@@ -12,7 +12,8 @@ library(lubridate)
 source("exercise_view_tab.R")
 source("right_side_bar.R")
 source("dashboard_tab.R")
-
+fitbod_data <- read.csv('fitbod_workout.csv')
+fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
 
 ui <- dashboardPagePlus(
   
@@ -44,7 +45,7 @@ ui <- dashboardPagePlus(
       tabItem("widgets",
               "Widgets tab content"
       ),
-      tabItem("ev", evTab_UI("evTab", "Ev Tab")
+      tabItem("ev", evTab_UI("evTab", "Ev Tab", fitbod_data)
     )
     
     ) 
