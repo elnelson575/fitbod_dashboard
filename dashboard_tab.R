@@ -7,7 +7,7 @@ dbTab_UI <- function(id, label = "ev") {
     fluidRow(
       column(width = 5,
         h2("Welcome!")),
-      column(width = 5, offset = 3,
+      column(width = 5, offset = 9,
              textOutput(ns("latest_data_date")),
              ),
       br(),br(),br()
@@ -27,9 +27,9 @@ dbTab_UI <- function(id, label = "ev") {
 ### Server Function ###
 dbTab_server <- function(input, output, session, fitbod_data) {
   
-  output$latest_data_date <- renderPrint(print(paste("Latest Data: ", 
+  output$latest_data_date <- renderText(paste("Latest Data: ", 
                                         as.character(max(fitbod_data$Date))
-                                        )))
+                                        ))
 }
 
 
