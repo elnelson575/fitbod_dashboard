@@ -9,77 +9,58 @@ library(lubridate)
 
 
 # tabs
-source("gen_UI.R")
 source("exercise_view_tab.R")
 source("right_side_bar.R")
 
+# sample data
 
 
-shinyApp(
+ui <- dashboardPagePlus(
+  
+  header = dashboardHeaderPlus(
+    enable_rightsidebar = TRUE,
+    rightSidebarIcon = "gears"
+  ),
   
   
-  ui = primaryUI,
+  sidebar = dashboardSidebar(
+    
+    
+    sidebarMenu(
+      # Setting id makes input$tabs give the tabName of currently-selected tab
+      id = "tabs",
+      menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
+      menuItem("Muscle Group View", icon = icon("th"), tabName = "widgets", badgeLabel = "new",
+               badgeColor = "green"),
+      menuItem("Exercise View", icon = icon("bar-chart-o"), tabName = "ev"
+      ))
+  ),
   
   
   
-  
-  
-  server = function(input, output) {
-    ### Import the data
-    ### 
+  body = dashboardBody(
+    tabItems(
+      tabItem("dashboard",
+              div(p("Dashboard tab content"))
+      ),
+      tabItem("widgets",
+              "Widgets tab content"
+      ),
+      tabItem("ev", evTab_UI("evTab", "Ev Tab")
+    )
     
-    fitbod_data <- read.csv('fitbod_workout.csv')
-    fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
-    clicked <- FALSE
-    fitbod_data_updated <- observeEvent(input$file1, {
-      clicked <- TRUE
-      inFile <- input$file1
-      data <- read.csv(inFile$datapath)
-      data <- data$Date <- as.Date(data$Date, format = "%Y-%m-%d")
-      if (input$include_warmups == TRUE) {
-        data <- filter(data, isWarmup != TRUE)
-      } 
-    })
-
-    
-    ### TODO:
-    ### Filter for weight over 0 (change so that it shows an error and blank if
-    ### there's not weight but there are reps)
-    
-    if (clicked == FALSE) {
-      use_data <- fitbod_data
-    } else {
-      use_data <- fitbod_data_updated()
-    }
-    data_weights <- use_data %>% filter(Weight > 0)
-    
-    total <- fitbod_data %>%
-      filter(Weight > 0) %>%
-      mutate(total_weight_set = Weight * Reps) %>%
-      group_by(Exercise, Date) %>%
-      summarise(total_weight = sum(total_weight_set)) %>%
-      ungroup()
-    
-    
-    output$total_weight <- renderPlotly({
-      plot_ly(total, x = ~Date, y = ~total_weight, color = ~Exercise) %>%
-        filter(Exercise %in% input$exercises) %>%
-        filter(Date >= input$date_range[1] & Date <= input$date_range[2]) %>%
-        add_lines()
-    })
-    
-    output$weight_time <- renderPlotly({
-      plot_ly(data_weights, x = ~Date, y = ~Weight, color = ~Exercise) %>%
-        filter(Exercise %in% input$exercises) %>%
-        filter(Date >= input$date_range[1] & Date <= input$date_range[2]) %>%
-        add_lines()
-    })
-    
-    output$reps <- renderPlotly({
-      plot_ly(fitbod_data, x = ~Date, y = ~Reps, color = ~Exercise) %>%
-        filter(Exercise %in% input$exercises) %>%
-        filter(Date >= input$date_range[1] & Date <= input$date_range[2]) %>%
-        add_lines()
-    })
-  }
+    ) 
+  ),
+  rightsidebar = right_side_bar_UI("right_sidebar", "Right Sidebar"),
+  title = "FitBod App Monitoring Dashboard"
 )
+  
+
+server <- function(input, output, session) {
+  fitbod_data <- read.csv('fitbod_workout.csv')
+  fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
+  callModule(evTab_server, "evTab", fitbod_data)
+  callModule(sidebar_server, "right_sidebar")
+}
+
+shinyApp(ui, server)
