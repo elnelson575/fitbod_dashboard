@@ -51,49 +51,18 @@ dbTab_UI <- function(id, label = "dashboard") {
                )
              ),
              
-             column(
-               width = 6,
-               h3("When Reversed = FALSE, can be displayed out of a box"),
-               timelineBlock(
-                 reversed = FALSE,
-                 timelineEnd(color = "danger"),
-                 timelineLabel(2018, color = "teal"),
-                 timelineItem(
-                   title = "Item 1",
-                   icon = "gears",
-                   color = "olive",
-                   time = "now",
-                   footer = "Here is the footer",
-                   "This is the body"
-                 ),
-                 timelineItem(
-                   title = "Item 2",
-                   border = FALSE
-                 ),
-                 timelineLabel(2015, color = "orange"),
-                 timelineItem(
-                   title = "Item 3",
-                   icon = "paint-brush",
-                   color = "maroon",
-                   timelineItemMedia(src = "http://placehold.it/150x100"),
-                   timelineItemMedia(src = "http://placehold.it/150x100")
-                 ),
-                 timelineStart(color = "gray")
-               )
-             )
       ),
-      title = "timelineBlock"
-    ),
       column(width = 6,
              gradientBox(
-               title = "Pick an Exercise",
+               title = "Top Exercises",
                icon = "fa fa-th",
                gradientColor = "teal", 
-               boxToolSize = "md", 
-               footer = NULL
+               boxToolSize = "lg", 
+               footer = DT::dataTableOutput(ns("top_exercises"))
              )
       )
     )
+  )
   
   #  )
 }
@@ -135,9 +104,18 @@ dbTab_server <- function(input, output, session, fitbod_data) {
   
   final <- paste("You lifted a ", comp$item, " ", round(num,0), " times!")
   
-  
-  
   output$comparison <- renderText(paste(final))
+  
+  top_exercises <- fitbod_data %>%
+    select(Exercise, Date) %>%
+    group_by(Date) %>%
+    unique() %>%
+    ungroup() %>%
+    count(Exercise) %>%
+    arrange(desc(n))
+    
+  output$top_exercises <- DT::renderDataTable(top_exercises)
+    
 }
 
 

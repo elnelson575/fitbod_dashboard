@@ -5,6 +5,7 @@ library(plotly)
 library(shinydashboardPlus)
 library(shinydashboard)
 library(lubridate)
+library(DT)
 
 
 # tabs
