@@ -21,35 +21,8 @@ dbTab_UI <- function(id, label = "dashboard") {
     ),
     fluidRow(
       column(width = 6,
-             box(
-               title = "Timeline",
-               status = "info",
-               timelineBlock(
-                 timelineEnd(color = "danger"),
-                 timelineLabel(2018, color = "teal"),
-                 timelineItem(
-                   title = "Item 1",
-                   icon = "gears",
-                   color = "olive",
-                   time = "now",
-                   footer = "Here is the footer",
-                   "This is the body"
-                 ),
-                 timelineItem(
-                   title = "Item 2",
-                   border = FALSE
-                 ),
-                 timelineLabel(2015, color = "orange"),
-                 timelineItem(
-                   title = "Item 3",
-                   icon = "paint-brush",
-                   color = "maroon",
-                   timelineItemMedia(src = "http://placehold.it/150x100"),
-                   timelineItemMedia(src = "http://placehold.it/150x100")
-                 ),
-                 timelineStart(color = "gray")
-               )
-             ),
+             box(uiOutput(ns("dynamic_timeline"))
+               ),
              
       ),
       column(width = 6,
@@ -116,6 +89,98 @@ dbTab_server <- function(input, output, session, fitbod_data) {
     
   output$top_exercises <- DT::renderDataTable(top_exercises)
     
+  # some variables
+  months <- tibble(number = 1:12, name = c("January", "February", "March", "April",
+                                           "May", "June", "July", "August", "September",
+                                           "October", "November", "December"))
+  fitbod_data_months <- unique(month(fitbod_data$Date))
+  
+  month_names <- filter(months, number %in% fitbod_data_months) %>% select(name)
+  
+  item_name <- unique(month(fitbod_data$Date))
+  item_color <- c("orange", "green", "maroon", "aqua", "purple")
+  
+  
+  val <- reactiveValues(
+    items = data.frame(
+      name = NULL,
+      time = NULL,
+      color = NULL,
+      image = NULL,
+      stringsAsFactors = FALSE
+    )
+  )
+  
+  # add items every 5 seconds 
+  # by listening to the random_number
+  id = 0
+  for (item in month_names) {
+    id <- id + 1
+    temp_item <- data.frame(
+      name = month_names[[id]],
+      time = item_name[[id]],
+      color = item_color[[id]]
+    )
+    val$items <- rbind(val$items, temp_item)
+  }
+  
+  #generate the dynamic timeline
+  output$dynamic_timeline <- renderUI({
+    
+    items <- val$items
+    len <- nrow(items)
+    name <- items$name
+    time <- items$time
+    color <- items$color
+    image <- items$image
+    
+    #box
+    boxPlus(
+      width = 6,
+      solidHeader = FALSE,
+      status = "primary",
+      collapsible = TRUE,
+      enable_label = TRUE,
+      label_text = len,
+      label_status = "danger",
+      style = "overflow-y: auto;",
+      title = "Recent Events",
+      
+      # timeline block 
+      # only appear when there are timeline items
+      if (len > 0) {
+        timelineBlock(
+          style = "height: 400px;",
+          timelineStart(color = "danger"),
+          br(),
+          lapply(1:len, FUN = function(i){
+            tagAppendAttributes(
+              timelineItem(
+                title = name[[i]],
+                icon = "medkit",
+                color = color[[i]],
+                time = dashboardLabel(
+                  style = "default",
+                  status = "warning",
+                  time[[i]]
+                ),
+                timelineItemMedia(
+                  src = image[[i]], 
+                  height = 100, 
+                  width = 100
+                ),
+                footer = NULL
+              ),
+              align = "middle"
+            )
+          }),
+          br(),
+          timelineEnd(color = "gray")
+        )
+      }
+    )
+  })
+  
 }
 
 
