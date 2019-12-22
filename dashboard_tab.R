@@ -101,14 +101,12 @@ dbTab_server <- function(input, output, session, fitbod_data) {
   item_color <- c("orange", "green", "maroon", "aqua", "purple")
   
   
-  val <- reactiveValues(
-    items = data.frame(
+  val <- data.frame(
       name = NULL,
       time = NULL,
       color = NULL,
       image = NULL,
       stringsAsFactors = FALSE
-    )
   )
   
   # add items every 5 seconds 
@@ -121,18 +119,18 @@ dbTab_server <- function(input, output, session, fitbod_data) {
       time = item_name[[id]],
       color = item_color[[id]]
     )
-    val$items <- rbind(val$items, temp_item)
+    val <- rbind(val, temp_item)
   }
   
   #generate the dynamic timeline
   output$dynamic_timeline <- renderUI({
     
-    items <- val$items
-    len <- nrow(items)
-    name <- items$name
-    time <- items$time
-    color <- items$color
-    image <- items$image
+    items <- val
+    len <- nrow(val)
+    name <- val$name
+    time <- val$time
+    color <- val$color
+    image <- val$image
     
     #box
     boxPlus(
