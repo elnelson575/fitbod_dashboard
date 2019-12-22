@@ -9,9 +9,8 @@ weights <- tibble(item = c("car", "medium missile", "armored car", "large meteor
 )
 
 
-  weights_filt <- subset(weights, weight <= total_weight)
+  weights_filt <- filter(weights, weight <= total_weight)
   comp <- weights_filt[sample(1:nrow(weights_filt), 1), ]
-  
   num <- total_weight / comp$weight
   
   final <- paste("You lifted a ", comp$item, " ", num, " times!")

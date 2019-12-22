@@ -1,6 +1,6 @@
 ### UI Function ###
 
-dbTab_UI <- function(id, label = "ev") {
+dbTab_UI <- function(id, label = "dashboard") {
   ns <- NS(id)
   # tagList(
   fluidPage(
@@ -18,8 +18,82 @@ dbTab_UI <- function(id, label = "ev") {
              h2(textOutput(ns("comparison"))),
              br(), br(), br(), br()
       ),
+    ),
+    fluidRow(
+      column(width = 6,
+             box(
+               title = "Timeline",
+               status = "info",
+               timelineBlock(
+                 timelineEnd(color = "danger"),
+                 timelineLabel(2018, color = "teal"),
+                 timelineItem(
+                   title = "Item 1",
+                   icon = "gears",
+                   color = "olive",
+                   time = "now",
+                   footer = "Here is the footer",
+                   "This is the body"
+                 ),
+                 timelineItem(
+                   title = "Item 2",
+                   border = FALSE
+                 ),
+                 timelineLabel(2015, color = "orange"),
+                 timelineItem(
+                   title = "Item 3",
+                   icon = "paint-brush",
+                   color = "maroon",
+                   timelineItemMedia(src = "http://placehold.it/150x100"),
+                   timelineItemMedia(src = "http://placehold.it/150x100")
+                 ),
+                 timelineStart(color = "gray")
+               )
+             ),
+             
+             column(
+               width = 6,
+               h3("When Reversed = FALSE, can be displayed out of a box"),
+               timelineBlock(
+                 reversed = FALSE,
+                 timelineEnd(color = "danger"),
+                 timelineLabel(2018, color = "teal"),
+                 timelineItem(
+                   title = "Item 1",
+                   icon = "gears",
+                   color = "olive",
+                   time = "now",
+                   footer = "Here is the footer",
+                   "This is the body"
+                 ),
+                 timelineItem(
+                   title = "Item 2",
+                   border = FALSE
+                 ),
+                 timelineLabel(2015, color = "orange"),
+                 timelineItem(
+                   title = "Item 3",
+                   icon = "paint-brush",
+                   color = "maroon",
+                   timelineItemMedia(src = "http://placehold.it/150x100"),
+                   timelineItemMedia(src = "http://placehold.it/150x100")
+                 ),
+                 timelineStart(color = "gray")
+               )
+             )
+      ),
+      title = "timelineBlock"
+    ),
+      column(width = 6,
+             gradientBox(
+               title = "Pick an Exercise",
+               icon = "fa fa-th",
+               gradientColor = "teal", 
+               boxToolSize = "md", 
+               footer = NULL
+             )
+      )
     )
-  )
   
   #  )
 }
@@ -54,8 +128,7 @@ dbTab_server <- function(input, output, session, fitbod_data) {
   
   weights_filt <- weights %>%
     filter(weight < as.numeric(total_weight))
-  
-  View(weights_filt)
+
   comp <- weights_filt[sample(1:nrow(weights_filt), 1), ]
   
   num <- total_weight / comp$weight
