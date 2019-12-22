@@ -98,6 +98,16 @@ dbTab_server <- function(input, output, session, fitbod_data) {
   month_names <- filter(months, number %in% fitbod_data_months) %>% select(name)
   
   item_name <- unique(month(fitbod_data$Date))
+  
+  item_text <- fitbod_data %>%
+    mutate(month = month(Date)) %>%
+    group_by(month) %>%
+    top_n(1, Weight) %>%
+    select(Exercise, month, Weight) %>%
+    unique() %>%
+    ungroup() %>%
+    left_join(months, by = c("month" = "number"))
+  
   item_color <- c("orange", "green", "maroon", "aqua", "purple")
   
   
@@ -106,18 +116,20 @@ dbTab_server <- function(input, output, session, fitbod_data) {
       time = NULL,
       color = NULL,
       image = NULL,
+      item_text = NULL,
       stringsAsFactors = FALSE
   )
   
   # add items every 5 seconds 
   # by listening to the random_number
   id = 0
-  for (item in month_names) {
+  for (item in item_text) {
     id <- id + 1
     temp_item <- data.frame(
       name = month_names[[id]],
       time = item_name[[id]],
-      color = item_color[[id]]
+      color = item_color[[id]],
+      footer = item_text[[id]]
     )
     val <- rbind(val, temp_item)
   }
@@ -162,11 +174,11 @@ dbTab_server <- function(input, output, session, fitbod_data) {
                   status = "warning",
                   time[[i]]
                 ),
-                timelineItemMedia(
-                  src = image[[i]], 
-                  height = 100, 
-                  width = 100
-                ),
+                # timelineItemMedia(
+                #   src = image[[i]], 
+                #   height = 100, 
+                #   width = 100
+                # ),
                 footer = NULL
               ),
               align = "middle"
