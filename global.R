@@ -6,6 +6,7 @@ library(shinydashboardPlus)
 library(shinydashboard)
 library(lubridate)
 library(DT)
+library(shinyWidgets)
 
 
 # tabs
