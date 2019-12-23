@@ -106,8 +106,11 @@ dbTab_server <- function(input, output, session, fitbod_data) {
     select(Exercise, month, Weight) %>%
     unique() %>%
     ungroup() %>%
-    left_join(months, by = c("month" = "number"))
+    left_join(months, by = c("month" = "number")) %>%
+    rename(time = name)
   
+  item_text$footer <- paste("You lifted ", item_text$Weight, " lbs on ", item_text$Exercise)
+  full_list <- item_text %>% select(-Exercise, -month, -Weight)
   item_color <- c("orange", "green", "maroon", "aqua", "purple")
   
   
@@ -122,27 +125,29 @@ dbTab_server <- function(input, output, session, fitbod_data) {
   
   # add items every 5 seconds 
   # by listening to the random_number
-  id = 0
-  for (item in item_text) {
-    id <- id + 1
-    temp_item <- data.frame(
-      name = month_names[[id]],
-      time = item_name[[id]],
-      color = item_color[[id]],
-      footer = item_text[[id]]
-    )
-    val <- rbind(val, temp_item)
-  }
+  # id = 0
+  # for (row in nrows(item_text)) {
+  # 
+  #   id <- id + 1
+  #   temp_item <- data.frame(
+  #     name = item$name,
+  #     time = item$Exercise,
+  #     color = item_color[[id]],
+  #     footer = paste("You lifted ", item$Weight, " lbs on ", item$Exercise)
+  #   )
+  #   val <- rbind(val, temp_item)
+  # }
   
   #generate the dynamic timeline
   output$dynamic_timeline <- renderUI({
     
     items <- val
-    len <- nrow(val)
-    name <- val$name
-    time <- val$time
-    color <- val$color
-    image <- val$image
+    len <- nrow(full_list)
+    name <- full_list$name
+    time <- full_list$name
+    color <- item_color
+    image <- NULL
+    footer <- full_list$footer
     
     #box
     boxPlus(
@@ -174,12 +179,7 @@ dbTab_server <- function(input, output, session, fitbod_data) {
                   status = "warning",
                   time[[i]]
                 ),
-                # timelineItemMedia(
-                #   src = image[[i]], 
-                #   height = 100, 
-                #   width = 100
-                # ),
-                footer = NULL
+                footer = footer[[i]]
               ),
               align = "middle"
             )
