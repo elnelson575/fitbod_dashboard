@@ -21,9 +21,7 @@ dbTab_UI <- function(id, label = "dashboard") {
     ),
     fluidRow(
       column(width = 6,
-             box(uiOutput(ns("dynamic_timeline"))
-               ),
-             
+               uiOutput(ns("dynamic_timeline"))
       ),
       column(width = 6,
              gradientBox(
@@ -113,29 +111,6 @@ dbTab_server <- function(input, output, session, fitbod_data) {
   full_list <- item_text %>% select(-Exercise, -month, -Weight)
   item_color <- c("orange", "green", "maroon", "aqua", "purple")
   
-  val <- data.frame(
-      name = NULL,
-      time = NULL,
-      color = NULL,
-      image = NULL,
-      item_text = NULL,
-      stringsAsFactors = FALSE
-  )
-  
-  # add items every 5 seconds 
-  # by listening to the random_number
-  # id = 0
-  # for (row in nrows(item_text)) {
-  # 
-  #   id <- id + 1
-  #   temp_item <- data.frame(
-  #     name = item$name,
-  #     time = item$Exercise,
-  #     color = item_color[[id]],
-  #     footer = paste("You lifted ", item$Weight, " lbs on ", item$Exercise)
-  #   )
-  #   val <- rbind(val, temp_item)
-  # }
   
   #generate the dynamic timeline
   output$dynamic_timeline <- renderUI({
@@ -163,7 +138,6 @@ dbTab_server <- function(input, output, session, fitbod_data) {
       # only appear when there are timeline items
       if (len > 0) {
         timelineBlock(
-        #  style = "height: 900px;",
           timelineStart(color = "danger"),
           br(),
           lapply(1:len, FUN = function(i){
