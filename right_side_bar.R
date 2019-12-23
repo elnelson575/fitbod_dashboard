@@ -16,7 +16,8 @@ right_side_bar_UI <- function(id, label = "right_sidebar") {
                     ".csv")
       ),
       tags$hr(),
-      checkboxInput(ns("include_warmups"), "Include Warm-Up Exercises?", TRUE)
+      checkboxInput(ns("include_warmups"), "Include Warm-Up Exercises?", TRUE),
+      actionButton(ns("update_data"), "Update Data")
     ),
     rightSidebarTabContent(
       id = 2,
@@ -37,11 +38,11 @@ right_side_bar_UI <- function(id, label = "right_sidebar") {
 
 
 sidebar_server <- function(input, output, session) {
+  
   fitbod_data <- read.csv('fitbod_workout.csv')
   fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
-  clicked <- FALSE
-  fitbod_data_updated <- observeEvent(input$file1, {
-    clicked <- TRUE
+  
+  fitbod_data <- observeEvent(input$update_data, {
     inFile <- input$file1
     data <- read.csv(inFile$datapath)
     data <- data$Date <- as.Date(data$Date, format = "%Y-%m-%d")

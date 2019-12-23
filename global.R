@@ -61,9 +61,10 @@ ui <- dashboardPagePlus(
 server <- function(input, output, session) {
   fitbod_data <- read.csv('fitbod_workout.csv')
   fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
+  callModule(sidebar_server, "right_sidebar")
   callModule(evTab_server, "evTab", fitbod_data)
   callModule(dbTab_server, "dbTab", fitbod_data)
-  callModule(sidebar_server, "right_sidebar")
+
 }
 
 shinyApp(ui, server)
