@@ -113,7 +113,6 @@ dbTab_server <- function(input, output, session, fitbod_data) {
   full_list <- item_text %>% select(-Exercise, -month, -Weight)
   item_color <- c("orange", "green", "maroon", "aqua", "purple")
   
-  
   val <- data.frame(
       name = NULL,
       time = NULL,
@@ -142,8 +141,8 @@ dbTab_server <- function(input, output, session, fitbod_data) {
   output$dynamic_timeline <- renderUI({
 
     len <- nrow(full_list)
-    name <- full_list$name
-    time <- full_list$name
+    name <- full_list$time
+    time <- full_list$time
     color <- item_color
     image <- NULL
     footer <- full_list$footer
@@ -164,14 +163,14 @@ dbTab_server <- function(input, output, session, fitbod_data) {
       # only appear when there are timeline items
       if (len > 0) {
         timelineBlock(
-          style = "height: 400px;",
+        #  style = "height: 900px;",
           timelineStart(color = "danger"),
           br(),
           lapply(1:len, FUN = function(i){
             tagAppendAttributes(
               timelineItem(
                 title = name[[i]],
-                icon = "medkit",
+                icon = "clock-o",
                 color = color[[i]],
                 time = dashboardLabel(
                   style = "default",
