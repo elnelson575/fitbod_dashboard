@@ -140,8 +140,7 @@ dbTab_server <- function(input, output, session, fitbod_data) {
   
   #generate the dynamic timeline
   output$dynamic_timeline <- renderUI({
-    
-    items <- val
+
     len <- nrow(full_list)
     name <- full_list$name
     time <- full_list$name
@@ -151,7 +150,7 @@ dbTab_server <- function(input, output, session, fitbod_data) {
     
     #box
     boxPlus(
-      width = 6,
+      width = 12,
       solidHeader = FALSE,
       status = "primary",
       collapsible = TRUE,
