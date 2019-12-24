@@ -14,8 +14,10 @@ dbTab_UI <- function(id, label = "dashboard") {
       ),
     fluidRow(
       column(width = 10,
-             h3(textOutput(ns("congrats"))),
-             h2(textOutput(ns("comparison"))),
+             box(
+              h3(textOutput(ns("congrats"))),
+              h2(textOutput(ns("comparison"))),
+             ),
              br(), br(), br(), br()
       ),
     ),
