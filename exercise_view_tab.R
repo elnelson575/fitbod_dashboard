@@ -61,27 +61,31 @@ evTab_UI <- function(id, label = "ev", fitbod_data) {
 ### Server Function ###
 evTab_server <- function(input, output, session, fitbod_data) {
 
-  total <- fitbod_data %>%
-    filter(Weight > 0) %>%
+  total <- reactive({
+    
+    total <- fitbod_data() %>%
+    dplyr::filter(Weight > 0) %>%
     mutate(total_weight_set = Weight * Reps) %>%
     group_by(Exercise, Date) %>%
     summarise(total_weight = sum(total_weight_set)) %>%
     ungroup()
+    total
+    })
   
   output$total_weight <- renderPlotly({
-    plot_ly(total, x = ~Date, y = ~total_weight, color = ~Exercise) %>%
+    plot_ly(total(), x = ~Date, y = ~total_weight, color = ~Exercise) %>%
       filter(Exercise %in% input$exercises) %>%
       add_lines()
   })
   
   output$weight_time <- renderPlotly({
-    plot_ly(fitbod_data, x = ~Date, y = ~Weight, color = ~Exercise) %>%
+    plot_ly(fitbod_data(), x = ~Date, y = ~Weight, color = ~Exercise) %>%
       filter(Exercise %in% input$exercises) %>%
       add_lines()
   })
   
   output$reps <- renderPlotly({
-    plot_ly(fitbod_data, x = ~Date, y = ~Reps, color = ~Exercise) %>%
+    plot_ly(fitbod_data(), x = ~Date, y = ~Reps, color = ~Exercise) %>%
       filter(Exercise %in% input$exercises) %>%
       add_lines()
   })

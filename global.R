@@ -15,8 +15,8 @@ source("right_side_bar.R")
 source("dashboard_tab.R")
 
 
-fitbod_data <- read.csv('fitbod_workout.csv')
-fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
+#fitbod_data <- read.csv('fitbod_workout.csv')
+#fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
 
 ui <- dashboardPagePlus(
   
@@ -33,7 +33,7 @@ ui <- dashboardPagePlus(
       # Setting id makes input$tabs give the tabName of currently-selected tab
       id = "tabs",
       menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
-      menuItem("Muscle Group View", icon = icon("th"), tabName = "widgets", badgeLabel = "new",
+      menuItem("Muscle Group View", icon = icon("th"), tabName = "widgets", badgeLabel = "Coming soon",
                badgeColor = "green"),
       menuItem("Exercise View", icon = icon("bar-chart-o"), tabName = "ev"
       ))
@@ -59,9 +59,9 @@ ui <- dashboardPagePlus(
   
 
 server <- function(input, output, session) {
-  fitbod_data <- read.csv('fitbod_workout.csv')
-  fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
-  callModule(sidebar_server, "right_sidebar")
+  # fitbod_data <- read.csv('fitbod_workout.csv')
+  # fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
+  fitbod_data <- callModule(sidebar_server, "right_sidebar")
   callModule(evTab_server, "evTab", fitbod_data)
   callModule(dbTab_server, "dbTab", fitbod_data)
 
