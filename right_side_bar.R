@@ -16,6 +16,7 @@ right_side_bar_UI <- function(id, label = "right_sidebar") {
                     ".csv")
       ),
       tags$hr(),
+      h4("Don't use this checkbox right now."),
       checkboxInput(ns("include_warmups"), "Include Warm-Up Exercises?", TRUE)#,
       #actionButton(ns("update_data"), "Update Data")
     )
