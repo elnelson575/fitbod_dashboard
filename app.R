@@ -7,6 +7,7 @@ library(shinydashboard)
 library(lubridate)
 library(DT)
 library(shinyWidgets)
+library(rintrojs)
 
 
 # tabs
@@ -32,6 +33,8 @@ ui <- dashboardPagePlus(
     sidebarMenu(
       # Setting id makes input$tabs give the tabName of currently-selected tab
       id = "tabs",
+      introjsUI(),
+      actionButton("help", "Help"),
       menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
       menuItem("Muscle Group View", icon = icon("th"), tabName = "widgets", badgeLabel = "Coming soon",
                badgeColor = "green"),
@@ -59,8 +62,19 @@ ui <- dashboardPagePlus(
   
 
 server <- function(input, output, session) {
-  # fitbod_data <- read.csv('fitbod_workout.csv')
-  # fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
+
+  help_data <- tibble(step = c(1, 2, 3, 4), 
+                      intro = c("Use this menu to upload your FitBod data as a CSV", 
+                                "Use this tab to see your dashboard",
+                                "Use this tab to see the muscle group view (disabled)",
+                                "Use this tab to analyze by exercise"),
+                      element = c('a[data-toggle*="sidebar"]','a[href*="dashboard"]','a[href*="widgets"]',
+                                  'a[href*="ev"]'),
+                      position = c("auto", "auto", "auto", "auto"))
+  
+  observeEvent(input$help, {
+    introjs(session, options = list(steps= help_data))
+  })
   fitbod_data <- callModule(sidebar_server, "right_sidebar")
   callModule(evTab_server, "evTab", fitbod_data)
   callModule(dbTab_server, "dbTab", fitbod_data)
