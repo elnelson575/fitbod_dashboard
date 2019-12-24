@@ -123,7 +123,6 @@ dbTab_server <- function(input, output, session, fitbod_data) {
     
     item_text$footer <- paste("You lifted ", item_text$Weight, " lbs on ", item_text$Exercise)
     full_list <- item_text %>% select(-Exercise, -month, -Weight)
-    
     full_list
   })
   
@@ -133,7 +132,7 @@ dbTab_server <- function(input, output, session, fitbod_data) {
   #generate the dynamic timeline
   output$dynamic_timeline <- renderUI({
 
-    len <- nrow(full_list())
+    len <- nrow(full_list()) -1
     name <- full_list()$time
     time <- full_list()$time
     color <- item_color

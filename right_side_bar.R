@@ -55,6 +55,9 @@ sidebar_server <- function(input, output, session) {
 
   dataframe <- reactive({
     data <- read.csv(userFile()$datapath)
+    data <- data[,c(1:4, 9)]
+    colnames(data) <- c("Date", "Exercise", "Reps", "Weight", "isWarmup")
+    data$Weight <- data$Weight * 2.20462
     data$Date <- as.Date(data$Date, format = "%Y-%m-%d")
     if (input$include_warmups == TRUE) {
       data <- filter(data, isWarmup != TRUE)
@@ -68,7 +71,7 @@ sidebar_server <- function(input, output, session) {
   })
   
   if (!exists("dataframe")) {
-    dataframe <- read.csv('fitbod_workout.csv')
+    dataframe <- read.csv(userFile()$datapath)
     dataframe$Date <- as.Date(dataframe$Date, format = "%Y-%m-%d")
   }
   
