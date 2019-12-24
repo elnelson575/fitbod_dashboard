@@ -1,69 +1,70 @@
-
+# Load packages
 library(shiny)
 library(tidyverse)
 library(plotly)
-library(gentelellaShiny)
+library(shinydashboardPlus)
+library(shinydashboard)
+library(lubridate)
+library(DT)
+library(shinyWidgets)
 
-# Define UI for application that draws a histogram
-ui <- fluidPage(
 
-    # Application title
-    titlePanel("Weight Over Time"),
+# tabs
+source("exercise_view_tab.R")
+source("right_side_bar.R")
+source("dashboard_tab.R")
 
-    # Sidebar with a slider input for number of bins 
-    sidebarLayout(
-        sidebarPanel(
-            selectizeInput(
-                inputId = "exercises", 
-                label = "Select an exercise", 
-                choices = unique(fitbod_data$Exercise), 
-                selected = "Dumbell Bicep Curl",
-                multiple = TRUE
-                )
-            ),
 
-        # Show a plot of the generated distribution
-        mainPanel(
-           plotlyOutput("weight_time"),
-           plotlyOutput("reps"),
-           plotlyOutput("total_weight")
-        )
+#fitbod_data <- read.csv('fitbod_workout.csv')
+#fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
+
+ui <- dashboardPagePlus(
+  
+  header = dashboardHeaderPlus(
+    enable_rightsidebar = TRUE,
+    rightSidebarIcon = "gears"
+  ),
+  
+  
+  sidebar = dashboardSidebar(
+    
+    
+    sidebarMenu(
+      # Setting id makes input$tabs give the tabName of currently-selected tab
+      id = "tabs",
+      menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
+      menuItem("Muscle Group View", icon = icon("th"), tabName = "widgets", badgeLabel = "Coming soon",
+               badgeColor = "green"),
+      menuItem("Exercise View", icon = icon("bar-chart-o"), tabName = "ev"
+      ))
+  ),
+  
+  
+  
+  body = dashboardBody(
+    tabItems(
+      tabItem("dashboard", dbTab_UI("dbTab", "Dashboard Tab")
+      ),
+      tabItem("widgets",
+              "Widgets tab content"
+      ),
+      tabItem("ev", evTab_UI("evTab", "Ev Tab", fitbod_data)
     )
+    
+    ) 
+  ),
+  rightsidebar = right_side_bar_UI("right_sidebar", "Right Sidebar"),
+  title = "FitBod App Monitoring Dashboard"
 )
+  
 
-# Define server logic required to draw a histogram
-server <- function(input, output) {
-    
-    fitbod_data <- read_csv('fitbod_workout.csv')
-    data_weights <- fitbod_data %>% filter(Weight > 0)
-    total <- fitbod_data %>%
-        filter(Weight > 0) %>%
-        mutate(total_weight_set = Weight * Reps) %>%
-        group_by(Exercise, Date) %>%
-        summarise(total_weight = sum(total_weight_set)) %>%
-        ungroup()
-    
-    output$total_weight <- renderPlotly({
-        plot_ly(total, x = ~Date, y = ~total_weight, color = ~Exercise) %>%
-            filter(Exercise %in% input$exercises) %>%
-            # group_by(city) %>%
-            add_lines()
-    })
+server <- function(input, output, session) {
+  # fitbod_data <- read.csv('fitbod_workout.csv')
+  # fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
+  fitbod_data <- callModule(sidebar_server, "right_sidebar")
+  callModule(evTab_server, "evTab", fitbod_data)
+  callModule(dbTab_server, "dbTab", fitbod_data)
 
-    output$weight_time <- renderPlotly({
-        plot_ly(data_weights, x = ~Date, y = ~Weight, color = ~Exercise) %>%
-            filter(Exercise %in% input$exercises) %>%
-           # group_by(city) %>%
-            add_lines()
-    })
-    
-    output$reps <- renderPlotly({
-        plot_ly(fitbod_data, x = ~Date, y = ~Reps, color = ~Exercise) %>%
-            filter(Exercise %in% input$exercises) %>%
-            # group_by(city) %>%
-            add_lines()
-    })
 }
 
-# Run the application 
-shinyApp(ui = ui, server = server)
+shinyApp(ui, server)
