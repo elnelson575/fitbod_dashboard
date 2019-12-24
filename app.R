@@ -18,6 +18,22 @@ source("dashboard_tab.R")
 ui <- dashboardPagePlus(
   
   header = dashboardHeaderPlus(
+    dropdownBlock(
+      id = "helpblock",
+      title = "Help!",
+      icon = "exclamation",
+      introjsUI(),
+      actionBttn(
+        inputId = "help",
+        label = "Tutorial",
+        color = "success",
+        style = "jelly",
+        #icon = icon("exclamation"),
+        size = "xs",
+        block = FALSE
+      )
+    ),
+    #title = "Fitbod Tracking Dashboard",
     enable_rightsidebar = TRUE,
     rightSidebarIcon = "gears"
   ),
@@ -29,16 +45,6 @@ ui <- dashboardPagePlus(
     sidebarMenu(
       # Setting id makes input$tabs give the tabName of currently-selected tab
       id = "tabs",
-      introjsUI(),
-      actionBttn(
-        inputId = "help",
-        label = "Help",
-        color = "success",
-        style = "jelly",
-        #icon = icon("exclamation"),
-        size = "xs",
-        block = FALSE
-      ),
       menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
       menuItem("Muscle Group View", icon = icon("th"), tabName = "widgets", badgeLabel = "Coming soon",
                badgeColor = "green"),
