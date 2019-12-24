@@ -15,10 +15,6 @@ source("exercise_view_tab.R")
 source("right_side_bar.R")
 source("dashboard_tab.R")
 
-
-#fitbod_data <- read.csv('fitbod_workout.csv')
-#fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
-
 ui <- dashboardPagePlus(
   
   header = dashboardHeaderPlus(
@@ -34,7 +30,15 @@ ui <- dashboardPagePlus(
       # Setting id makes input$tabs give the tabName of currently-selected tab
       id = "tabs",
       introjsUI(),
-      actionButton("help", "Help"),
+      actionBttn(
+        inputId = "help",
+        label = "Help",
+        color = "success",
+        style = "jelly",
+        #icon = icon("exclamation"),
+        size = "xs",
+        block = FALSE
+      ),
       menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
       menuItem("Muscle Group View", icon = icon("th"), tabName = "widgets", badgeLabel = "Coming soon",
                badgeColor = "green"),
