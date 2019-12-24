@@ -73,6 +73,16 @@ ui <- dashboardPagePlus(
 
 server <- function(input, output, session) {
 
+  startup_modal <- modalDialog(
+    title = "Welcome!",
+    easyClose = T,
+    'Please use the "Help!" button to get oriented, or upload your data using the right sidebar.'
+    )
+  
+  # Show the model on start up ...
+  showModal(startup_modal)
+  
+  
   help_data <- tibble(step = c(1, 2, 3, 4), 
                       intro = c("Use this menu to upload your FitBod data as a CSV", 
                                 "Use this tab to see your dashboard",
