@@ -16,9 +16,10 @@ right_side_bar_UI <- function(id, label = "right_sidebar") {
                     ".csv")
       ),
       tags$hr(),
-      checkboxInput(ns("include_warmups"), "Include Warm-Up Exercises?", TRUE),
-      actionButton(ns("update_data"), "Update Data")
-    )#,
+      checkboxInput(ns("include_warmups"), "Include Warm-Up Exercises?", TRUE)#,
+      #actionButton(ns("update_data"), "Update Data")
+    )
+    #,
     #rightSidebarTabContent(
       # id = 2,
       # title = "Tab 2",
@@ -50,20 +51,13 @@ sidebar_server <- function(input, output, session) {
   
   
   
-  # fitbod_data <- observeEvent(input$update_data, {
-  #   inFile <- input$file1
-  #   data <- read.csv(inFile$datapath)
-  #   data <- data$Date <- as.Date(data$Date, format = "%Y-%m-%d")
-  #   if (input$include_warmups == TRUE) {
-  #     data <- filter(data, isWarmup != TRUE)
-  #   } 
-  # })
+
   dataframe <- reactive({
     data <- read.csv(userFile()$datapath)
-    data$Date <- data$Date <- as.Date(data$Date, format = "%Y-%m-%d")
+    data$Date <- as.Date(data$Date, format = "%Y-%m-%d")
     if (input$include_warmups == TRUE) {
       data <- filter(data, isWarmup != TRUE)
-    } 
+    }
   })
   
   
@@ -73,7 +67,7 @@ sidebar_server <- function(input, output, session) {
   })
   
   if (!exists("dataframe")) {
-    dataframe <- fitbod_data <- read.csv('fitbod_workout.csv')
+    dataframe <- read.csv('fitbod_workout.csv')
     dataframe$Date <- as.Date(dataframe$Date, format = "%Y-%m-%d")
   }
   
