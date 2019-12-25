@@ -8,12 +8,15 @@ library(lubridate)
 library(DT)
 library(shinyWidgets)
 library(rintrojs)
+library(stringr)
+library(rhandsontable)
 
 
 # tabs
 source("exercise_view_tab.R")
 source("right_side_bar.R")
 source("dashboard_tab.R")
+source("muscle_group_tab.R")
 
 ui <- dashboardPagePlus(
   
@@ -46,7 +49,7 @@ ui <- dashboardPagePlus(
       # Setting id makes input$tabs give the tabName of currently-selected tab
       id = "tabs",
       menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
-      menuItem("Muscle Group View", icon = icon("th"), tabName = "widgets", badgeLabel = "Coming soon",
+      menuItem("Muscle Group View", icon = icon("th"), tabName = "mg", badgeLabel = "Coming soon",
                badgeColor = "green"),
       menuItem("Exercise View", icon = icon("bar-chart-o"), tabName = "ev"
       ))
@@ -58,8 +61,7 @@ ui <- dashboardPagePlus(
     tabItems(
       tabItem("dashboard", dbTab_UI("dbTab", "Dashboard Tab")
       ),
-      tabItem("widgets",
-              "Widgets tab content"
+      tabItem("mg", mgTab_UI("mgTab", "Muscle Group Tab")
       ),
       tabItem("ev", evTab_UI("evTab", "Ev Tab", fitbod_data)
     )
@@ -83,6 +85,9 @@ server <- function(input, output, session) {
   showModal(startup_modal)
   
   
+  exercises <- read_delim('Exercises.txt', delim = ",", col_names = FALSE) %>%
+    rename(Exercise = X1, Muscle = X2)
+  
   help_data <- tibble(step = c(1, 2, 3, 4), 
                       intro = c("Use this menu to upload your FitBod data as a CSV", 
                                 "Use this tab to see your dashboard",
@@ -97,6 +102,7 @@ server <- function(input, output, session) {
   })
   fitbod_data <- callModule(sidebar_server, "right_sidebar")
   callModule(evTab_server, "evTab", fitbod_data)
+  callModule(mgTab_server, "mgTab", fitbod_data, exercises)
   callModule(dbTab_server, "dbTab", fitbod_data)
 
 }
