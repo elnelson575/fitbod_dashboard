@@ -91,14 +91,14 @@ server <- function(input, output, session) {
   help_data <- tibble(step = c(1, 2, 3, 4), 
                       intro = c("Use this menu to upload your FitBod data as a CSV", 
                                 "Use this tab to see your dashboard",
-                                "Use this tab to see the muscle group view (disabled)",
+                                "Use this tab to see the muscle group view (under development)",
                                 "Use this tab to analyze by exercise"),
                       element = c('a[data-toggle*="sidebar"]','a[href*="dashboard"]','a[href*="widgets"]',
                                   'a[href*="ev"]'),
                       position = c("auto", "auto", "auto", "auto"))
   
   observeEvent(input$help, {
-    introjs(session, options = list(steps= help_data))
+    introjs(session, options = list(steps = help_data))
   })
   fitbod_data <- callModule(sidebar_server, "right_sidebar")
   callModule(evTab_server, "evTab", fitbod_data)
