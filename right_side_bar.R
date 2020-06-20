@@ -35,11 +35,11 @@ right_side_bar_UI <- function(id, label = "right_sidebar") {
 ### Server Function ####
 
 
-sidebar_server <- function(input, output, session) {
+sidebar_server <- function(input, output, session, backup_data) {
                         
   get_data <- reactive({
     if (is.null(input$file1)) {
-      fitbod_data <- read.csv('./sample_workout.csv')
+      backup_data
     } else {
       read.csv(input$file1$datapath)
     }

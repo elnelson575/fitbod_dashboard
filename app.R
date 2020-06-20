@@ -85,7 +85,7 @@ server <- function(input, output, session) {
   # Show the model on start up ...
   showModal(startup_modal)
   
-  
+  backup_data <- read.csv('sample_workout.csv')
   exercises <- read_delim('Exercises.txt', delim = ",", col_names = FALSE) %>%
     rename(Exercise = X1, Muscle = X2)
   
@@ -101,7 +101,7 @@ server <- function(input, output, session) {
   observeEvent(input$help, {
     introjs(session, options = list(steps = help_data))
   })
-  fitbod_data <- callModule(sidebar_server, "right_sidebar")
+  fitbod_data <- callModule(sidebar_server, "right_sidebar", backup_data)
   callModule(evTab_server, "evTab", fitbod_data)
   callModule(mgTab_server, "mgTab", fitbod_data, exercises)
   callModule(dbTab_server, "dbTab", fitbod_data)
