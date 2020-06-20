@@ -114,27 +114,28 @@ dbTab_server <- function(input, output, session, fitbod_data) {
   full_list <- reactive({
     
     item_text <- fitbod_data() %>%
-      mutate(month = month(Date)) %>%
-      group_by(month) %>%
-      top_n(1, Weight) %>%
+      mutate(month = month(Date), year = year(Date)) %>%
+      group_by(year, month) %>%
+      slice_max(Weight, n = 1, with_ties = FALSE) %>%
       select(Exercise, month, Weight) %>%
       unique() %>%
       ungroup() %>%
+      arrange(desc(year), desc(month)) %>%
       left_join(months, by = c("month" = "number")) %>%
-      rename(time = name)
+      mutate(time = paste(name, " ", year))
     
     item_text$footer <- paste("You lifted ", item_text$Weight, " lbs on ", item_text$Exercise)
-    full_list <- item_text %>% select(-Exercise, -month, -Weight)
+    full_list <- item_text %>% ungroup() %>% select(-Exercise, -name, -month, -year, -Weight)
     full_list
   })
   
-  item_color <- c("orange", "green", "maroon", "aqua", "purple")
+  item_color <- c("orange", "green", "maroon", "aqua", "purple", "blue", "pink")
   
   
   #generate the dynamic timeline
   output$dynamic_timeline <- renderUI({
 
-    len <- nrow(full_list()) -1
+    len <- nrow(full_list())
     name <- full_list()$time
     time <- full_list()$time
     color <- item_color
@@ -164,7 +165,7 @@ dbTab_server <- function(input, output, session, fitbod_data) {
               timelineItem(
                 title = name[[i]],
                 icon = "clock-o",
-                color = color[[i]],
+                color = color[[sample(1:7, 1)]],
                 time = dashboardLabel(
                   style = "default",
                   status = "warning",
