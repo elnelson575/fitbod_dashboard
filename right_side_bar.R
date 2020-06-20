@@ -14,11 +14,7 @@ right_side_bar_UI <- function(id, label = "right_sidebar") {
                     "text/csv",
                     "text/comma-separated-values,text/plain",
                     ".csv")
-      ),
-      tags$hr(),
-      h4("Don't use this checkbox right now."),
-      checkboxInput(ns("include_warmups"), "Include Warm-Up Exercises?", TRUE)#,
-      #actionButton(ns("update_data"), "Update Data")
+      )
     )
     #,
     #rightSidebarTabContent(
@@ -40,40 +36,23 @@ right_side_bar_UI <- function(id, label = "right_sidebar") {
 
 
 sidebar_server <- function(input, output, session) {
-  
-  #fitbod_data <- read.csv('fitbod_workout.csv')
-  #fitbod_data$Date <- as.Date(fitbod_data$Date, format = "%Y-%m-%d")
-  
-  userFile <- reactive({
-    # If no file is selected, don't do anything
-    validate(need(input$file1, message = FALSE))
-    input$file1
-  })
-  
-  
-  
-
-  dataframe <- reactive({
-    data <- read.csv(userFile()$datapath)
-    data <- data[,c(1:4, 9)]
-    colnames(data) <- c("Date", "Exercise", "Reps", "Weight", "isWarmup")
-    data$Weight <- data$Weight * 2.20462
-    data$Date <- as.Date(data$Date, format = "%Y-%m-%d")
-    if (input$include_warmups == TRUE) {
-      data <- filter(data, isWarmup != TRUE)
+                        
+  get_data <- reactive({
+    if (is.null(input$file1)) {
+      fitbod_data <- read.csv('sample_workout.csv')
+    } else {
+      read.csv(input$file1$datapath)
     }
   })
   
-  
-  observe({
-    msg <- sprintf("File %s was uploaded", userFile()$name)
-    cat(msg, "\n")
+
+  dataframe <- reactive({
+    data <- get_data()[,c(1:4, 9)]
+    colnames(data) <- c("Date", "Exercise", "Reps", "Weight", "isWarmup")
+    data$Weight <- data$Weight * 2.20462
+    data$Date <- as.Date(data$Date, format = "%Y-%m-%d")
+    data <- filter(data, isWarmup != TRUE)
   })
-  
-  if (!exists("dataframe")) {
-    dataframe <- read.csv(userFile()$datapath)
-    dataframe$Date <- as.Date(dataframe$Date, format = "%Y-%m-%d")
-  }
   
   
   return(dataframe)

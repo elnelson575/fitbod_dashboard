@@ -78,7 +78,8 @@ server <- function(input, output, session) {
   startup_modal <- modalDialog(
     title = "Welcome!",
     easyClose = T,
-    'Please use the "Help!" button to get oriented, or upload your data using the right sidebar.'
+    'Please use the "Help!" button to get oriented, or upload your data using the right sidebar.
+    The app will start with sample data in place to show you around if you do not have data of your own.'
     )
   
   # Show the model on start up ...
