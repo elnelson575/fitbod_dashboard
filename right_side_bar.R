@@ -39,7 +39,7 @@ sidebar_server <- function(input, output, session) {
                         
   get_data <- reactive({
     if (is.null(input$file1)) {
-      fitbod_data <- read.csv('sample_workout.csv')
+      fitbod_data <- read.csv('./sample_workout.csv')
     } else {
       read.csv(input$file1$datapath)
     }
