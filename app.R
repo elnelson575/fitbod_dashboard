@@ -17,6 +17,7 @@ source("exercise_view_tab.R")
 source("right_side_bar.R")
 source("dashboard_tab.R")
 source("muscle_group_tab.R")
+backup_data <- read.csv('sample_workout.csv')
 
 ui <- dashboardPagePlus(
   
@@ -85,7 +86,6 @@ server <- function(input, output, session) {
   # Show the model on start up ...
   showModal(startup_modal)
   
-  backup_data <- read.csv('sample_workout.csv')
   exercises <- read_delim('Exercises.txt', delim = ",", col_names = FALSE) %>%
     rename(Exercise = X1, Muscle = X2)
   
