@@ -70,7 +70,7 @@ mgTab_server <- function(input, output, session, fitbod_data, exercises) {
     exercises$Muscle <- str_trim(exercises$Muscle, side = "left")
     exercises$Exercise <- str_to_title(exercises$Exercise)
     
-    combo <- left_join(fitbod_data(), exercises, by = "Exercise") %>%
+    combo <- left_join(fitbod_data(), exercises, by = "Exercise", copy = TRUE) %>%
       select(Exercise, Muscle) %>%
       unique()
     
@@ -100,7 +100,6 @@ mgTab_server <- function(input, output, session, fitbod_data, exercises) {
                  }
     modified_table
   })
-  
   # modified_table <- eventReactive(input$file2,
   #                                 {
   #                                   user_file <- read.csv(input$file2)
@@ -120,41 +119,40 @@ mgTab_server <- function(input, output, session, fitbod_data, exercises) {
   )
   
   mg_graph_df <- reactive({
-    combo_complete <- left_join(fitbod_data(), modified_table(), by = "Exercise") %>%
+    combo_complete <- reactive(left_join(backup_data, modified_table, by = "Exercise", copy = TRUE) %>%
       filter(isWarmup == 'false') %>%
-      filter(Muscle %in% c(input$muscle_group))
+      filter(Muscle %in% c(input$muscle_group)))
     
-    top_weight <- combo_complete %>%
-      group_by(Muscle)
+    top_weight <- reactive(combo_complete() %>%
+      dplyr::group_by(Muscle))
 
-    cat <- top_weight %>% top_n(1, Weight) %>% .$Exercise
-    top <- top_weight %>% filter(Exercise %in% c(cat))
+    cat <- reactive(top_weight() %>% top_n(1, Weight) %>% .$Exercise)
+    top <- reactive(top_weight() %>% filter(Exercise %in% c(cat)))
       
     top
   })
   
   
-  total <- reactive({
-    total <- mg_graph_df() %>%
+  total <- reactive({mg_graph_df() %>%
       mutate(total_weight_set = Weight * Reps) %>%
       group_by(Exercise, Date) %>%
       summarise(total_weight = sum(total_weight_set)) %>%
       ungroup()
-    total
   })
-  
+
   output$total_weight_mg <- renderPlotly({
-    plot_ly(total(), x = ~Date, y = ~total_weight, color = ~Exercise) %>%
+    plot_ly(data = total(), x = ~Date, y = ~total_weight, color = ~Exercise) %>%
       add_lines()
   })
   
+  mg_react <- reactive({mg_graph_df()[mg_graph_df()$muscle_group == input$muscle_group,]})
   output$weight_time_mg <- renderPlotly({
-    plot_ly(mg_graph_df(), x = ~Date, y = ~Weight, color = ~Exercise) %>%
+    plot_ly(data = mg_react(), x = ~Date, y = ~Weight, color = ~Exercise) %>%
       add_lines()
   })
   
   output$reps_mg <- renderPlotly({
-    plot_ly(mg_graph_df(), x = ~Date, y = ~Reps, color = ~Exercise) %>%
+    plot_ly(data = mg_react(), x = ~Date, y = ~Reps, color = ~Exercise) %>%
       add_lines()
   })
   

@@ -28,7 +28,7 @@ server <- function(input, output, session) {
   })
   fitbod_data <- callModule(sidebar_server, "right_sidebar", backup_data)
   callModule(evTab_server, "evTab", fitbod_data)
-  callModule(mgTab_server, "mgTab", fitbod_data, exercises)
+  #callModule(mgTab_server, "mgTab", fitbod_data, exercises)
   callModule(dbTab_server, "dbTab", fitbod_data)
   
 }

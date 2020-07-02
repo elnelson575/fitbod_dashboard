@@ -30,8 +30,8 @@ ui <- dashboardPagePlus(
       # Setting id makes input$tabs give the tabName of currently-selected tab
       id = "tabs",
       menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
-      menuItem("Muscle Group View", icon = icon("th"), tabName = "mg", badgeLabel = "Coming soon",
-               badgeColor = "green"),
+      #menuItem("Muscle Group View", icon = icon("th"), tabName = "mg", badgeLabel = "Coming soon",
+               #badgeColor = "green"),
       menuItem("Exercise View", icon = icon("bar-chart-o"), tabName = "ev"
       ))
   ),
@@ -42,9 +42,9 @@ ui <- dashboardPagePlus(
     tabItems(
       tabItem("dashboard", dbTab_UI("dbTab", "Dashboard Tab")
       ),
-      tabItem("mg", mgTab_UI("mgTab", "Muscle Group Tab")
-      ),
-      tabItem("ev", evTab_UI("evTab", "Ev Tab", fitbod_data)
+     # tabItem("mg", mgTab_UI("mgTab", "Muscle Group Tab")
+      #),
+      tabItem("ev", evTab_UI("evTab", "Ev Tab")
       )
       
     ) 
