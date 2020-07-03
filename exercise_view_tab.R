@@ -74,19 +74,19 @@ evTab_server <- function(input, output, session, fitbod_data) {
   
   output$total_weight <- renderPlotly({
     plot_ly(total(), x = ~Date, y = ~total_weight, color = ~Exercise) %>%
-      dplyr::filter(Exercise %in% input$exercises) %>%
+      dplyr::filter(Exercise %in% (input$exercises)) %>%
       add_lines()
   })
   
   output$weight_time <- renderPlotly({
     plot_ly(fitbod_data(), x = ~Date, y = ~Weight, color = ~Exercise) %>%
-      dplyr::filter(Exercise %in% input$exercises) %>%
+      dplyr::filter(Exercise %in% (input$exercises)) %>%
       add_lines()
   })
   
   output$reps <- renderPlotly({
     plot_ly(fitbod_data(), x = ~Date, y = ~Reps, color = ~Exercise) %>%
-      filter(Exercise %in% input$exercises) %>%
+      dplyr::filter(Exercise %in% (input$exercises)) %>%
       add_lines()
   })
 }
