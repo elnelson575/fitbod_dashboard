@@ -19,4 +19,3 @@ source("dashboard_tab.R")
 
 backup_data <- read.csv('sample_workout.csv')
 backup_exercises <- unique(as.character(backup_data$Exercise))
-View(backup_exercises)

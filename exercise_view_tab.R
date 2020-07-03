@@ -15,7 +15,7 @@ evTab_UI <- function(id, label = "ev") {
               selectizeInput(
                 inputId = ns("exercises"), 
                 label = "Select an exercise", 
-                choices = ifelse(exists("fitbod_data"), unique(fitbod_data$Exercise), backup_exercises),
+                choices = backup_exercises,
                 selected = "Dumbell Bicep Curl",
                 multiple = TRUE
                 ),
@@ -58,6 +58,9 @@ evTab_UI <- function(id, label = "ev") {
 
 ### Server Function ###
 evTab_server <- function(input, output, session, fitbod_data) {
+  
+  backup_exercises <- reactive({ifelse(exists("fitbod_data"), fitbod_data()$Exercise, backup_exercises)})
+  
   total <- reactive({
     
     total <- fitbod_data() %>%
